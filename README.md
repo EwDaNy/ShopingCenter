@@ -46,7 +46,7 @@ PROJECT_WEB/
 ├── backend/
 ├── frontend/
 │   └── market_pr/
-
+```text
 
 # Market Product Manager
 
