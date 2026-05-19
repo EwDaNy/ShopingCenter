@@ -1,0 +1,37 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: market_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  backend:
+    build: ./backend
+    container_name: market_backend
+    ports:
+      - "5001:5001"
+    environment:
+      PORT: 5001
+      MONGO_URI: mongodb://mongo:27017/market_db
+      JWT_SECRET: supersecretkey
+    depends_on:
+      - mongo
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+  frontend:
+    build: ./frontend/market_pr
+    container_name: market_frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend/market_pr:/app
+      - /app/node_modules
+
+volumes:
+  mongo_data:
