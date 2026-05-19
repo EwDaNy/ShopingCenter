@@ -48,20 +48,6 @@ PROJECT_WEB/
 │   └── market_pr/
 
 
-Да, понял 😄
-Проблема в том, что я иногда добавлял технические атрибуты вроде id="...", и из-за этого GitHub воспринимал часть README как обычный кодовый блок и всё становилось серым.
-
-✅ Решение
-
-Ниже я даю абсолютно чистый Markdown, без id="..." и без лишних служебных вставок.
-
-👉 Просто:
-
-Выдели весь текст.
-Скопируй.
-Вставь в README.md.
-Сохрани.
-Сделай git add . && git commit -m "Update README" && git push.
 # Market Product Manager
 
 Market Product Manager is a full-stack web application developed using the MERN stack (MongoDB, Express.js, React, and Node.js). The application allows users to register, log in, and manage products through a modern and responsive dashboard.
