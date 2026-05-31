@@ -32,13 +32,15 @@ export async function getProductById(req, res) {
 
 export async function createProduct(req, res){
     try{
-        const { name, price, category, image } = req.body;
+        const { name, description, price, category, image, countInStock } = req.body;
 
         const product = new Product({
             name,
+            description,
             price,
             category,
             image,
+            countInStock,
         });
 
         const savedProduct = await product.save();
@@ -69,7 +71,6 @@ export async function deleteProduct(req, res){
 export async function updateProduct(req, res){
     try{
         const { id } = req.params;
-        const {name, price, category,  image} = req.body;
         const updatedProduct = await Product.findByIdAndUpdate(id, req.body, { new: true });
 
         if (!updatedProduct) return res.status(404).json({message: "Product not found"});
