@@ -5,6 +5,8 @@ import API from "../services/api";
 const inputClass =
   "w-full rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-sky-400 focus:ring-4 focus:ring-sky-100";
 
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default function Register() {
   const navigate = useNavigate();
 
@@ -16,12 +18,27 @@ export default function Register() {
     try {
       setMessage("");
 
-      if (!email || !password) {
+      const normalizedEmail = email.trim().toLowerCase();
+
+      if (!normalizedEmail || !password) {
         setMessage("Please fill all fields");
         return;
       }
 
-      await API.post("/auth/register", { email, password });
+      if (!emailRegex.test(normalizedEmail)) {
+        setMessage("Enter a valid email address");
+        return;
+      }
+
+      if (password.length < 6) {
+        setMessage("Password must be at least 6 characters");
+        return;
+      }
+
+      await API.post("/auth/register", {
+        email: normalizedEmail,
+        password,
+      });
 
       navigate("/login");
     } catch (err: any) {

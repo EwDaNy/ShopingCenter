@@ -5,6 +5,8 @@ import { Link, useNavigate } from "react-router-dom";
 const inputClass =
   "w-full rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-sky-400 focus:ring-4 focus:ring-sky-100";
 
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState<string>("");
@@ -15,12 +17,22 @@ export default function Login() {
     try {
       setError("");
 
-      if (!email || !password) {
+      const normalizedEmail = email.trim().toLowerCase();
+
+      if (!normalizedEmail || !password) {
         setError("Please enter email and password");
         return;
       }
 
-      const res = await API.post("/auth/login", { email, password });
+      if (!emailRegex.test(normalizedEmail)) {
+        setError("Enter a valid email address");
+        return;
+      }
+
+      const res = await API.post("/auth/login", {
+        email: normalizedEmail,
+        password,
+      });
 
       localStorage.setItem("token", res.data.token);
       navigate("/dashboard");

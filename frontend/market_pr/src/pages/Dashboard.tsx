@@ -18,6 +18,17 @@ type SortMode = "newest" | "priceLow" | "priceHigh" | "name";
 const inputClass =
   "w-full rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-sky-400 focus:ring-4 focus:ring-sky-100";
 
+const isValidImageUrl = (value: string) => {
+  if (!value.trim()) return true;
+
+  try {
+    const url = new URL(value);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
+};
+
 export default function Dashboard() {
   const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
@@ -72,13 +83,50 @@ export default function Dashboard() {
   };
 
   const validateForm = () => {
-    if (!name.trim() || !price || !category.trim()) {
+    const trimmedName = name.trim();
+    const trimmedCategory = category.trim();
+    const trimmedDescription = description.trim();
+    const trimmedImage = image.trim();
+    const priceValue = Number(price);
+    const stockValue = Number(countInStock || 0);
+
+    if (!trimmedName || !price || !trimmedCategory) {
       showMessage("Please fill product name, price and category");
       return false;
     }
 
-    if (Number(price) < 0 || Number(countInStock || 0) < 0) {
-      showMessage("Price and stock cannot be negative");
+    if (!Number.isFinite(priceValue)) {
+      showMessage("Price must be a valid number");
+      return false;
+    }
+
+    if (priceValue < 0) {
+      showMessage("Price cannot be negative");
+      return false;
+    }
+
+    if (!Number.isInteger(stockValue) || stockValue < 0) {
+      showMessage("Stock must be a non-negative whole number");
+      return false;
+    }
+
+    if (trimmedName.length > 80) {
+      showMessage("Product name cannot exceed 80 characters");
+      return false;
+    }
+
+    if (trimmedCategory.length > 40) {
+      showMessage("Category cannot exceed 40 characters");
+      return false;
+    }
+
+    if (trimmedDescription.length > 300) {
+      showMessage("Description cannot exceed 300 characters");
+      return false;
+    }
+
+    if (!isValidImageUrl(trimmedImage)) {
+      showMessage("Image URL must be a valid http or https URL");
       return false;
     }
 
